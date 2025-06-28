@@ -8,3 +8,6 @@ dependencies = [
     "pytest>=8.4.1",
     "uuid-utils>=0.11.0",
 ]
+
+[tool.ruff.format]
+docstring-code-format = true
