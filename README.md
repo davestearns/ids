@@ -13,8 +13,8 @@ from base_id import BaseID
 class AccountID(BaseID):
     PREFIX = "acct"
 
-class SessionID(BaseID):
-    PREFIX = "ses"
+class PostID(BaseID):
+    PREFIX = "post"
 
 account_id = AccountID()
 print(account_id) # => acct_3e6wlko0bp8e7c9916hklbnd
@@ -26,8 +26,8 @@ assert type(account_id) is AccountID
 # so it works anywhere a str does
 assert isinstance(account_id, str)
 
-# And SessionID is a different type than AccountID
-assert type(AccountID()) is not type(SessionID())
+# And PostID is a different type than AccountID
+assert type(AccountID()) is not type(PostID())
 
 # When you receive one of these IDs as a string,
 # you can rehydrate it back into the specific type
