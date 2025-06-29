@@ -79,3 +79,12 @@ def test_define_duplicate_prefix_fail() -> None:
 
         class DuplicatePrefixID(BaseID):
             PREFIX = prefix
+
+
+def test_new_random() -> None:
+    class MeetingID(BaseID):
+        PREFIX = "meet"
+        ORDERED = False
+
+    id = MeetingID()
+    assert id.startswith(MeetingID.PREFIX)

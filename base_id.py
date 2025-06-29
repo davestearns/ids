@@ -31,6 +31,12 @@ class BaseID(str):
     UUID is encoded in base36 instead of hex (base16) to keep
     it shorter.
 
+    If you instead want a totally random ID, set the class
+    property `ORDERED = False`, and a UUIDv4 will be used instead.
+    This is appropriate when you are using the IDs as
+    authorization tokens and you want them to be totally
+    unguessable (e.g., a meeting ID for a video conferencing app).
+
     The `id` will be typed as a `TestID`, but since it inherits
     from `BaseID` and that inherits from `str`, you can treat
     `id` as a string. Database libraries and other encoders
@@ -66,12 +72,21 @@ class BaseID(str):
     Each derived class must set PREFIX to a unique string.
     """
 
+    ORDERED: bool = True
+    """
+    When set to True, new IDs will start with a timestamp,
+    so they have a natural creation ordering. If you instead
+    want a totally random ID set this to False. Random IDs are
+    good for situations where you're using the ID as an
+    authorization token, so you need it to be unguessable.
+    """
+
     prefix_to_class_map: dict[str, Type["BaseID"]] = {}
 
     def __new__(cls, encoded_id: str | None = None):
         if encoded_id is None:
             # Generate a new UUID
-            id_int = uuid.uuid7().int
+            id_int = uuid.uuid7().int if cls.ORDERED else uuid.uuid4().int
 
             # Base36 encode it
             encoded_chars = []
