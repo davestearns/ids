@@ -8,6 +8,7 @@ class AccountID(BaseID):
 
 class SessionID(BaseID):
     PREFIX = "ses"
+    ORDERED = False
 
 
 def test_creation() -> None:
@@ -44,9 +45,9 @@ def test_init() -> None:
 def test_init_fail() -> None:
     acct_id = AccountID()
     ses_id = SessionID()
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="expected prefix 'ses_'"):
         SessionID(acct_id)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="expected prefix 'acct_'"):
         AccountID(ses_id)
 
 
@@ -58,7 +59,10 @@ def test_parse() -> None:
 
 
 def test_parse_fail() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError,
+        match="does not match a known ID prefix.",
+    ):
         BaseID.parse("invalid_123")
 
 
@@ -75,16 +79,7 @@ def test_define_duplicate_prefix_fail() -> None:
     class TestID(BaseID):
         PREFIX = prefix
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="The ID prefix 'test' is used on both"):
 
         class DuplicatePrefixID(BaseID):
             PREFIX = prefix
-
-
-def test_new_random() -> None:
-    class MeetingID(BaseID):
-        PREFIX = "meet"
-        ORDERED = False
-
-    id = MeetingID()
-    assert id.startswith(MeetingID.PREFIX)
